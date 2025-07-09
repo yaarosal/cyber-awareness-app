@@ -3,34 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register | Cyber Awareness App</title>
+  <title>Register | Cyber Awareness</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen font-sans">
 
-  <div class="min-h-screen flex items-center justify-center">
-    <form id="registerForm" class="bg-white p-6 rounded-xl shadow-md w-full max-w-sm">
-      <h2 class="text-2xl font-bold mb-4 text-center text-green-700">Create Account</h2>
+  <div class="bg-white shadow-2xl rounded-2xl w-full max-w-md p-8">
+    <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Create Account</h2>
 
-      <label class="block mb-2">
-        <span class="text-gray-700">Email</span>
-        <input type="email" id="email" class="mt-1 block w-full border border-gray-300 p-2 rounded" required />
-      </label>
-
-      <label class="block mb-4">
-        <span class="text-gray-700">Password</span>
-        <input type="password" id="password" class="mt-1 block w-full border border-gray-300 p-2 rounded" required />
-      </label>
-
-      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
-        Register
-      </button>
-
-      <p id="errorMsg" class="text-red-600 text-sm mt-4 text-center hidden"></p>
+    <form id="registerForm" class="space-y-4">
+      <input id="email" type="email" placeholder="Email" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      <input id="password" type="password" placeholder="Password" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">Register</button>
     </form>
+
+    <p id="statusMessage" class="text-center text-sm mt-4 text-red-500 hidden"></p>
+    <div id="loading" class="text-center mt-4 hidden">
+      <svg class="animate-spin h-5 w-5 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+      </svg>
+      <p class="text-xs text-gray-600 mt-2">Creating account...</p>
+    </div>
   </div>
 
-  <!-- Firebase & Auth Script -->
+  <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
@@ -39,7 +36,7 @@
       apiKey: "AIzaSyBaRuoFEgJ3Ih06kn4WN7pkJdYs06snCuY",
       authDomain: "cyberawarenessapp-7ca65.firebaseapp.com",
       projectId: "cyberawarenessapp-7ca65",
-      storageBucket: "cyberawarenessapp-7ca65.firebasestorage.app",
+      storageBucket: "cyberawarenessapp-7ca65.appspot.com",
       messagingSenderId: "289971832959",
       appId: "1:289971832959:web:b249032ad85b8e7c5c174a"
     };
@@ -47,24 +44,27 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const registerForm = document.getElementById("registerForm");
-    const errorMsg = document.getElementById("errorMsg");
+    const form = document.getElementById("registerForm");
+    const status = document.getElementById("statusMessage");
+    const loader = document.getElementById("loading");
 
-    registerForm.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      status.classList.add("hidden");
+      loader.classList.remove("hidden");
+
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log("Registered:", user.email);
-          window.location.href = "module.html"; // Go to module page
-        })
-        .catch((error) => {
-          errorMsg.textContent = "Registration failed: " + error.message;
-          errorMsg.classList.remove("hidden");
-        });
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        loader.innerHTML = "<p class='text-green-600 text-sm mt-4'>Success! Redirecting...</p>";
+        setTimeout(() => window.location.href = "module.html", 1500);
+      } catch (error) {
+        loader.classList.add("hidden");
+        status.textContent = error.message.replace("Firebase:", "").trim();
+        status.classList.remove("hidden");
+      }
     });
   </script>
 </body>
