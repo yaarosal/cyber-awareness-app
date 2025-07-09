@@ -8,35 +8,55 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
 
+  <!-- Registration Form Container -->
   <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
     <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">Create Account</h2>
 
+    <!-- Registration Form -->
     <form id="registerForm" class="space-y-4">
+
+      <!-- Email Input -->
       <input type="email" id="email" placeholder="Email"
-             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400"/>
+             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400" required/>
 
+      <!-- Password Input -->
       <input type="password" id="password" placeholder="Password"
-             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400"/>
+             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400" required/>
 
-      <button type="submit"
+      <!-- Confirm Password Input -->
+      <input type="password" id="confirmPassword" placeholder="Confirm Password"
+             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400" required/>
+
+      <!-- Toggle Password Visibility -->
+      <div class="flex items-center space-x-2">
+        <input type="checkbox" id="showPassword">
+        <label for="showPassword" class="text-sm text-gray-700">Show Password</label>
+      </div>
+
+      <!-- Register Button -->
+      <button id="registerBtn" type="submit"
               class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
         Register
       </button>
     </form>
 
+    <!-- Feedback Message -->
     <p id="message" class="text-center mt-4 text-sm font-medium"></p>
 
+    <!-- Link to Login Page -->
     <p class="text-center text-sm text-gray-600 mt-4">
       Already have an account?
-      <a href="login.html" class="text-blue-600 font-medium hover:underline">Login</a>
+      <a id="loginLink" href="login.html" class="text-blue-600 font-medium hover:underline">Login</a>
     </p>
   </div>
 
-  <!-- Firebase -->
+  <!-- Firebase Logic -->
   <script type="module">
+    // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
+    // Firebase project config
     const firebaseConfig = {
       apiKey: "AIzaSyBaRuoFEgJ3Ih06kn4WN7pkJdYs06snCuY",
       authDomain: "cyberawarenessapp-7ca65.firebaseapp.com",
@@ -46,42 +66,84 @@
       appId: "1:289971832959:web:b249032ad85b8e7c5c174a"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    // DOM elements
     const form = document.getElementById("registerForm");
     const message = document.getElementById("message");
+    const registerBtn = document.getElementById("registerBtn");
+    const showPasswordCheckbox = document.getElementById("showPassword");
+    const loginLink = document.getElementById("loginLink");
 
+    // Show/hide password
+    showPasswordCheckbox.addEventListener("change", () => {
+      const type = showPasswordCheckbox.checked ? "text" : "password";
+      document.getElementById("password").type = type;
+      document.getElementById("confirmPassword").type = type;
+    });
+
+    // Handle Registration
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const email = form.email.value.trim();
       const password = form.password.value;
+      const confirmPassword = form.confirmPassword.value;
+
+      // Reset UI
+      message.textContent = "";
+      registerBtn.disabled = true;
+      registerBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+      // Check password match
+      if (password !== confirmPassword) {
+        message.textContent = "Passwords do not match.";
+        message.className = "text-red-600 text-center mt-4";
+        registerBtn.disabled = false;
+        registerBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        return;
+      }
 
       try {
+        // Create user
         await createUserWithEmailAndPassword(auth, email, password);
-        message.textContent = "🎉 Account created! Redirecting to login...";
+
+        // Success message
+        message.textContent = "Account created successfully. Please proceed to login.";
         message.className = "text-green-600 text-center mt-4";
+
+        // Animate login link
+        loginLink.classList.add("animate-pulse", "font-semibold");
+
+        // Reset button after 3 seconds
         setTimeout(() => {
-          window.location.href = "login.html";
-        }, 2000);
+          message.textContent = "";
+          registerBtn.disabled = false;
+          registerBtn.classList.remove("opacity-50", "cursor-not-allowed");
+          loginLink.classList.remove("animate-pulse", "font-semibold");
+        }, 3000);
       } catch (error) {
-        let msg = "❌ An error occurred. Please try again.";
+        // Show appropriate error message
+        let msg = "An error occurred. Try again.";
 
         if (error.code === "auth/email-already-in-use") {
-          msg = "⚠️ This email is already registered.";
+          msg = "This email is already registered.";
         } else if (error.code === "auth/weak-password") {
-          msg = "⚠️ Password should be at least 6 characters.";
+          msg = "Password should be at least 6 characters.";
         } else if (error.code === "auth/invalid-email") {
-          msg = "⚠️ Enter a valid email address.";
+          msg = "Enter a valid email address.";
         } else if (error.code === "auth/network-request-failed") {
-          msg = "📡 Network error. Check your internet and try again.";
+          msg = "Network error. Check your internet and try again.";
         }
 
         message.textContent = msg;
         message.className = "text-red-600 text-center mt-4";
+        registerBtn.disabled = false;
+        registerBtn.classList.remove("opacity-50", "cursor-not-allowed");
       }
     });
   </script>
-
 </body>
 </html>
