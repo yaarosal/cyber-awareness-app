@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | Cyber Awareness App</title>
+  <title>Register | Cyber Awareness App</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
 
   <div class="min-h-screen flex items-center justify-center">
-    <form id="loginForm" class="bg-white p-6 rounded-xl shadow-md w-full max-w-sm">
-      <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">Login</h2>
+    <form id="registerForm" class="bg-white p-6 rounded-xl shadow-md w-full max-w-sm">
+      <h2 class="text-2xl font-bold mb-4 text-center text-green-700">Create Account</h2>
 
       <label class="block mb-2">
         <span class="text-gray-700">Email</span>
@@ -22,8 +22,8 @@
         <input type="password" id="password" class="mt-1 block w-full border border-gray-300 p-2 rounded" required />
       </label>
 
-      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-        Login
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
+        Register
       </button>
 
       <p id="errorMsg" class="text-red-600 text-sm mt-4 text-center hidden"></p>
@@ -33,7 +33,7 @@
   <!-- Firebase & Auth Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBaRuoFEgJ3Ih06kn4WN7pkJdYs06snCuY",
@@ -47,22 +47,22 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
     const errorMsg = document.getElementById("errorMsg");
 
-    loginForm.addEventListener("submit", (e) => {
+    registerForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      signInWithEmailAndPassword(auth, email, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log("Login successful:", user.email);
-          window.location.href = "module.html"; // redirect after login
+          console.log("Registered:", user.email);
+          window.location.href = "module.html"; // Go to module page
         })
         .catch((error) => {
-          errorMsg.textContent = "Login failed: " + error.message;
+          errorMsg.textContent = "Registration failed: " + error.message;
           errorMsg.classList.remove("hidden");
         });
     });
