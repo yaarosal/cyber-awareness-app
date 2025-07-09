@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+  <title>Cyber Awareness App</title>
+</head>
+<body>
+
+  <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center text-center p-4">
+  <h1 class="text-4xl font-bold text-blue-600 mb-4">Cyber Awareness Web App</h1>
+  <p class="text-lg text-gray-700">Firebase connected successfully</p>
+</div>
+
+  <!-- Firebase App Setup -->
+  <script type="module">
+    // Import Firebase core and auth module
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBaRuoFEgJ3Ih06kn4WN7pkJdYs06snCuY",
+      authDomain: "cyberawarenessapp-7ca65.firebaseapp.com",
+      projectId: "cyberawarenessapp-7ca65",
+      storageBucket: "cyberawarenessapp-7ca65.firebasestorage.app",
+      messagingSenderId: "289971832959",
+      appId: "1:289971832959:web:b249032ad85b8e7c5c174a"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    console.log("Firebase connected:", app);
+  </script>
+
+</body>
+</html>
