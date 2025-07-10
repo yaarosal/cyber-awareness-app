@@ -9,21 +9,23 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
 
   <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
-    <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">Login</h2>
+    <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">Sign In</h2>
 
-    <form id="loginForm" class="space-y-4">
+    <form id="loginForm" class="space-y-4 relative">
       <input type="email" id="email" placeholder="Email"
-             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400"/>
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400"/>
 
       <div class="relative">
         <input type="password" id="password" placeholder="Password"
-               class="w-full px-4 py-2 border rounded-lg pr-10 focus:outline-none focus:ring focus:border-blue-400"/>
-        <span id="togglePassword" class="absolute right-3 top-2.5 text-gray-600 cursor-pointer select-none">👁️</span>
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400 pr-10"/>
+        <button type="button" id="togglePassword" tabindex="-1"
+          class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800">
+          👁️
+        </button>
       </div>
 
       <button type="submit"
-              class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
-              disabled>
+        class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
         Login
       </button>
     </form>
@@ -36,7 +38,7 @@
     </p>
   </div>
 
-  <!-- Firebase & Logic -->
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
@@ -54,29 +56,12 @@
     const auth = getAuth(app);
 
     const form = document.getElementById("loginForm");
-    const emailInput = form.email;
-    const passwordInput = form.password;
     const message = document.getElementById("message");
-    const button = form.querySelector("button");
-
-    // Enable button only when both fields are filled
-    form.addEventListener("input", () => {
-      button.disabled = !(emailInput.value && passwordInput.value);
-    });
-
-    // Toggle password visibility
-    document.getElementById("togglePassword").addEventListener("click", () => {
-      const type = passwordInput.type === "password" ? "text" : "password";
-      passwordInput.type = type;
-    });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      message.textContent = "Checking credentials...";
-      message.className = "text-blue-600 text-center mt-4";
+      const email = form.email.value.trim();
+      const password = form.password.value;
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
@@ -84,25 +69,29 @@
         message.className = "text-green-600 text-center mt-4";
         setTimeout(() => {
           window.location.href = "module.html";
-        }, 2000);
+        }, 1500);
       } catch (error) {
-        let msg = "Login failed. Try again.";
-
+        let msg = "An error occurred. Try again.";
         if (error.code === "auth/user-not-found") {
-          msg = "No account found with this email.";
+          msg = "Account not found. Please register first.";
         } else if (error.code === "auth/wrong-password") {
-          msg = "Incorrect password. Please try again.";
+          msg = "Incorrect password.";
         } else if (error.code === "auth/invalid-email") {
           msg = "Enter a valid email address.";
         } else if (error.code === "auth/network-request-failed") {
           msg = "Network error. Please check your connection.";
         }
-
         message.textContent = msg;
         message.className = "text-red-600 text-center mt-4";
       }
     });
-  </script>
 
+    // Show/hide password
+    const passwordInput = document.getElementById("password");
+    const toggleBtn = document.getElementById("togglePassword");
+    toggleBtn.addEventListener("click", () => {
+      passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    });
+  </script>
 </body>
 </html>
