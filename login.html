@@ -2,35 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | Cyber Awareness App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Cyber Awareness</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
 
-  <div class="min-h-screen flex items-center justify-center">
-    <form id="loginForm" class="bg-white p-6 rounded-xl shadow-md w-full max-w-sm">
-      <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">Login</h2>
+  <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">Login</h2>
 
-      <label class="block mb-2">
-        <span class="text-gray-700">Email</span>
-        <input type="email" id="email" class="mt-1 block w-full border border-gray-300 p-2 rounded" required />
-      </label>
+    <form id="loginForm" class="space-y-4">
+      <input type="email" id="email" placeholder="Email"
+             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400"/>
 
-      <label class="block mb-4">
-        <span class="text-gray-700">Password</span>
-        <input type="password" id="password" class="mt-1 block w-full border border-gray-300 p-2 rounded" required />
-      </label>
+      <div class="relative">
+        <input type="password" id="password" placeholder="Password"
+               class="w-full px-4 py-2 border rounded-lg pr-10 focus:outline-none focus:ring focus:border-blue-400"/>
+        <span id="togglePassword" class="absolute right-3 top-2.5 text-gray-600 cursor-pointer select-none">👁️</span>
+      </div>
 
-      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+      <button type="submit"
+              class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+              disabled>
         Login
       </button>
-
-      <p id="errorMsg" class="text-red-600 text-sm mt-4 text-center hidden"></p>
     </form>
+
+    <p id="message" class="text-center mt-4 text-sm font-medium"></p>
+
+    <p class="text-center text-sm text-gray-600 mt-4">
+      Don't have an account?
+      <a href="register.html" class="text-blue-600 font-medium hover:underline">Register</a>
+    </p>
   </div>
 
-  <!-- Firebase & Auth Script -->
+  <!-- Firebase & Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
@@ -47,25 +53,56 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const loginForm = document.getElementById("loginForm");
-    const errorMsg = document.getElementById("errorMsg");
+    const form = document.getElementById("loginForm");
+    const emailInput = form.email;
+    const passwordInput = form.password;
+    const message = document.getElementById("message");
+    const button = form.querySelector("button");
 
-    loginForm.addEventListener("submit", (e) => {
+    // Enable button only when both fields are filled
+    form.addEventListener("input", () => {
+      button.disabled = !(emailInput.value && passwordInput.value);
+    });
+
+    // Toggle password visibility
+    document.getElementById("togglePassword").addEventListener("click", () => {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+    });
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log("Login successful:", user.email);
-          window.location.href = "module.html"; // redirect after login
-        })
-        .catch((error) => {
-          errorMsg.textContent = "Login failed: " + error.message;
-          errorMsg.classList.remove("hidden");
-        });
+      message.textContent = "Checking credentials...";
+      message.className = "text-blue-600 text-center mt-4";
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        message.textContent = "Login successful. Redirecting...";
+        message.className = "text-green-600 text-center mt-4";
+        setTimeout(() => {
+          window.location.href = "module.html";
+        }, 2000);
+      } catch (error) {
+        let msg = "Login failed. Try again.";
+
+        if (error.code === "auth/user-not-found") {
+          msg = "No account found with this email.";
+        } else if (error.code === "auth/wrong-password") {
+          msg = "Incorrect password. Please try again.";
+        } else if (error.code === "auth/invalid-email") {
+          msg = "Enter a valid email address.";
+        } else if (error.code === "auth/network-request-failed") {
+          msg = "Network error. Please check your connection.";
+        }
+
+        message.textContent = msg;
+        message.className = "text-red-600 text-center mt-4";
+      }
     });
   </script>
+
 </body>
 </html>
