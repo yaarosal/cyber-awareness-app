@@ -18,8 +18,7 @@
       <div class="relative">
         <input type="password" id="password" placeholder="Password"
           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400 pr-10"/>
-
-        <!-- 👁 Reusing same eye icon from register.html -->
+        <!-- SAME ICON AS register.html -->
         <svg id="togglePassword" xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5 absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 cursor-pointer"
           fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,7 +52,7 @@
       apiKey: "AIzaSyBaRuoFEgJ3Ih06kn4WN7pkJdYs06snCuY",
       authDomain: "cyberawarenessapp-7ca65.firebaseapp.com",
       projectId: "cyberawarenessapp-7ca65",
-      storageBucket: "cyberawarenessapp-7ca65.firebasestorage.app",
+      storageBucket: "cyberawarenessapp-7ca65.appspot.com",
       messagingSenderId: "289971832959",
       appId: "1:289971832959:web:b249032ad85b8e7c5c174a"
     };
@@ -71,15 +70,15 @@
       const email = form.email.value.trim();
       const password = form.password.value;
 
-      // Manual field check
+      // Field completion check
       if (!email || !password) {
-        message.textContent = "Email and password are required.";
+        message.textContent = "Both email and password are required.";
         message.className = "text-red-600 text-center mt-4";
         return;
       }
 
-      // Simple regex email format check
-      const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+      // Email format check
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) {
         message.textContent = "Enter a valid email address.";
         message.className = "text-red-600 text-center mt-4";
@@ -94,18 +93,26 @@
           window.location.href = "module.html";
         }, 1500);
       } catch (error) {
-        let msg = "Something went wrong. Try again shortly.";
+        let msg;
 
-        if (error.code === "auth/user-not-found") {
-          msg = "No account found with this email.";
-        } else if (error.code === "auth/wrong-password") {
-          msg = "Incorrect password. Please try again.";
-        } else if (error.code === "auth/invalid-email") {
-          msg = "Enter a valid email address.";
-        } else if (error.code === "auth/too-many-requests") {
-          msg = "Too many failed attempts. Try again later.";
-        } else if (error.code === "auth/network-request-failed") {
-          msg = "Unable to connect. Check your internet.";
+        switch (error.code) {
+          case "auth/user-not-found":
+            msg = "No account found with this email.";
+            break;
+          case "auth/wrong-password":
+            msg = "Incorrect password. Please try again.";
+            break;
+          case "auth/invalid-email":
+            msg = "Invalid email format.";
+            break;
+          case "auth/too-many-requests":
+            msg = "Too many failed attempts. Try again later.";
+            break;
+          case "auth/network-request-failed":
+            msg = "Network error. Check your internet connection.";
+            break;
+          default:
+            msg = "Something went wrong. Try again shortly.";
         }
 
         message.textContent = msg;
