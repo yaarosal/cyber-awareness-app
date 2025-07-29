@@ -3,45 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cyber Modules</title>
+  <title>Cyber Modules - Cyber Awareness</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
-
-  <!-- Header -->
-  <header class="bg-blue-700 text-white px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold">Cybersecurity Awareness</h1>
-    <button id="logoutBtn" class="bg-white text-blue-700 px-4 py-1 rounded hover:bg-gray-200">
+<body class="bg-gray-100 min-h-screen px-4 pt-10 pb-20">
+  <header class="max-w-5xl mx-auto flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-blue-700">Cyber Awareness Modules</h1>
+    <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
       Logout
     </button>
   </header>
 
-  <!-- Main content -->
-  <main class="flex-1 p-6">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Available Modules</h2>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Module 1 -->
-      <div class="bg-white shadow rounded-lg p-4 hover:shadow-lg transition">
-        <h3 class="text-xl font-bold text-blue-700 mb-2">Phishing Awareness</h3>
-        <p class="text-gray-700">Learn how to identify and avoid phishing emails and websites.</p>
-        <a href="#" class="inline-block mt-3 text-blue-600 hover:underline">Start Module</a>
+  <main class="max-w-5xl mx-auto">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Module card example -->
+      <div class="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Phishing Awareness</h2>
+        <p class="text-sm text-gray-600 mb-3">Learn how to detect phishing emails and protect your data.</p>
+        <a href="#" class="text-blue-600 hover:underline text-sm">Start Module</a>
       </div>
 
-      <!-- Module 2 -->
-      <div class="bg-white shadow rounded-lg p-4 hover:shadow-lg transition">
-        <h3 class="text-xl font-bold text-blue-700 mb-2">Social Engineering</h3>
-        <p class="text-gray-700">Understand how attackers manipulate people to gain access.</p>
-        <a href="#" class="inline-block mt-3 text-blue-600 hover:underline">Start Module</a>
+      <div class="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Social Engineering Tactics</h2>
+        <p class="text-sm text-gray-600 mb-3">Understand psychological manipulation and how attackers exploit trust.</p>
+        <a href="#" class="text-blue-600 hover:underline text-sm">Start Module</a>
       </div>
 
-      <!-- Module 3 -->
-      <div class="bg-white shadow rounded-lg p-4 hover:shadow-lg transition">
-        <h3 class="text-xl font-bold text-blue-700 mb-2">Ghanaian Scams</h3>
-        <p class="text-gray-700">Explore common scams targeting people in Ghana and how to stay safe.</p>
-        <a href="#" class="inline-block mt-3 text-blue-600 hover:underline">Start Module</a>
+      <div class="bg-white rounded-xl shadow-md p-5 hover:shadow-lg transition">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Password Safety</h2>
+        <p class="text-sm text-gray-600 mb-3">Create strong passwords and avoid common mistakes.</p>
+        <a href="#" class="text-blue-600 hover:underline text-sm">Start Module</a>
       </div>
-    </div>
+
+      <!-- Add more modules below -->
+    </section>
   </main>
 
   <!-- Firebase -->
@@ -61,23 +56,19 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Protect page from unauthenticated access
+    // Check if user is logged in
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.href = "login.html";
+        window.location.href = "login.html"; // redirect if not logged in
       }
     });
 
-    // Logout
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      try {
-        await signOut(auth);
+    // Logout button
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => {
         window.location.href = "login.html";
-      } catch (error) {
-        alert("Logout failed. Try again.");
-      }
+      });
     });
   </script>
-
 </body>
 </html>

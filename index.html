@@ -2,39 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
-  <title>Cyber Awareness App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cyber Awareness - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 min-h-screen flex flex-col justify-between">
 
-  <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center text-center p-4">
-  <h1 class="text-4xl font-bold text-blue-600 mb-4">Cyber Awareness Web App</h1>
-  <p class="text-lg text-gray-700">Firebase connected successfully</p>
-</div>
+  <!-- Header -->
+  <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-700">Cyber Awareness</h1>
+    <nav>
+      <a href="login.html" class="text-blue-600 font-medium hover:underline">Login</a>
+      <span class="mx-2">|</span>
+      <a href="register.html" class="text-blue-600 font-medium hover:underline">Register</a>
+    </nav>
+  </header>
 
-  <!-- Firebase App Setup -->
-  <script type="module">
-    // Import Firebase core and auth module
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
--
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyBaRuoFEgJ3Ih06kn4WN7pkJdYs06snCuY",
-      authDomain: "cyberawarenessapp-7ca65.firebaseapp.com",
-      projectId: "cyberawarenessapp-7ca65",
-      storageBucket: "cyberawarenessapp-7ca65.firebasestorage.app",
-      messagingSenderId: "289971832959",
-      appId: "1:289971832959:web:b249032ad85b8e7c5c174a"
-    };
+  <!-- Main Hero Section -->
+  <main class="flex-grow flex items-center justify-center px-4">
+    <div class="text-center max-w-xl">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">
+        Stay Safe Online. Get Smarter About Cyber Threats.
+      </h2>
+      <p class="text-gray-600 mb-6">
+        Learn how to identify phishing scams, protect your information, and stay alert against social engineering — all tailored for Ghanaian users.
+      </p>
+      <a href="module.html" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+        Start Learning
+      </a>
+    </div>
+  </main>
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    console.log("Firebase connected:", app);
-  </script>
+  <!-- Footer -->
+  <footer class="bg-white shadow-inner py-4 text-center text-sm text-gray-500">
+    &copy; 2025 Cyber Awareness Project · Made with 💡 in Ghana
+  </footer>
 
 </body>
 </html>
